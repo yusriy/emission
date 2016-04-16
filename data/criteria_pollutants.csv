@@ -1,0 +1,5 @@
+source,CO,PM,NO2,SO2
+industry,0.4,30,6,9
+power_plant,3.8,27,61,50
+others,0.5,25,7,34
+motor_vehicles,95,18,26,7
