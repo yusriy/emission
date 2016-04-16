@@ -14,7 +14,7 @@ active_non_active <- active_non_active[-1,]
 png(filename='fig/fig_2_active_non_active.png',height=8,width= 16,units='cm',
     res = 400)
 # To set margins and legend position
-par(xpd=TRUE,mar=c(2.5,5,1,1))
+par(xpd=TRUE,mar=c(4,5,1,1))
 barplot(active_non_active/1000000,
         ylab=expression(paste("Number of vehicles, 10"^"6")),
         beside = TRUE,col=c('grey90','white'),
@@ -34,11 +34,11 @@ energy_use <- read.csv('data/energy_use.csv',header = TRUE)
 png(filename='fig/fig_2_energy.png',height=8,width= 16,units='cm',
     res = 400)
 # To set margins and legend position
-par(xpd=TRUE,mar=c(2,5,0.5,1))
+par(xpd=TRUE,mar=c(4,5,0.5,1))
 
 barplot(energy_use$energy_use_percent,col='white',ylim = c(0,50),
         names.arg = c('Industry','Commercial','Residents','Others'),
-        ylab = 'Percent of energy consumption')
+        ylab = 'Percent of energy consumption', xlab = 'End user')
 text(x = 2.5, y = 47, 'Total 2012 energy consumption is 96257 GWh')
 box()
 dev.off()
@@ -48,10 +48,15 @@ dev.off()
 criteria_pollutants <- read.csv("data/criteria_pollutants.csv", header=TRUE)
 # Rename the headers; rename header[row,column],using 1st row
 rownames(criteria_pollutants) <- criteria_pollutants[,1]
-# Remove 1st row,-1 remove 1st row
-criteria_pollutants <- criteria_pollutants[,-1]
+# Remove 1st row,-1 remove 1st and 2nd rows
+criteria_pollutants <- criteria_pollutants[,-c(1:2)]
+
 # Change all values to numeric type
-criteria_pollutants <- sapply(criteria_pollutants,as.numeric)
+criteria_pollutants$CO <- as.numeric(criteria_pollutants$CO)
+criteria_pollutants$PM <- as.numeric(criteria_pollutants$PM)
+criteria_pollutants$SO2 <- as.numeric(criteria_pollutants$SO2)
+criteria_pollutants$NO2 <- as.numeric(criteria_pollutants$NO2)
+criteria_pollutants <- as.matrix(criteria_pollutants)
 
 ## To plot the barplot
 png(filename='fig/fig_2_pollutants.png',height=8,width= 16,units='cm',
@@ -64,10 +69,9 @@ pal <- colorRampPalette(cols)
 
 barplot(criteria_pollutants,
         col=sort(pal(4)),horiz=TRUE,xaxt='n',
-        #c('red','blue','green','white')
         names.arg = c('CO','PM', expression(paste('NO'['2'])),
                       expression(paste('SO'['2']))),
-        xlab = 'Percent contribution for the year 2013')
+        xlab = 'Percent contribution', ylab = 'Pollutant')
 
 # grid(ny=NA,nx=10,col='grey20',lty='dotted')
 axis(side=1,at=c(0,10,20,30,40,50,60,70,80,90,100),
