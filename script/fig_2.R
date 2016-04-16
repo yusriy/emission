@@ -1,5 +1,7 @@
 ### Script to plot Fig. 2 a
 
+library(RColorBrewer)
+
 ## Import data
 active_non_active <- read.csv('data/active_non_active.csv',sep=',',header=TRUE)
 # To transpose
@@ -24,6 +26,22 @@ legend('topleft',col=c('black','black'),pt.bg=c('grey90','white'),pch=c(22,22),
 box()
 dev.off()
 
+### Script to plot Fig. 2 b
+## Import the data
+energy_use <- read.csv('data/energy_use.csv',header = TRUE)
+
+## To plot barplot
+png(filename='fig/fig_2_energy.png',height=8,width= 16,units='cm',
+    res = 400)
+# To set margins and legend position
+par(xpd=TRUE,mar=c(2,5,0.5,1))
+
+barplot(energy_use$energy_use_percent,col='white',ylim = c(0,50),
+        names.arg = c('Industry','Commercial','Residents','Others'),
+        ylab = 'Percent of energy consumption')
+text(x = 2.5, y = 47, 'Total 2012 energy consumption is 96257 GWh')
+box()
+dev.off()
 ### Script to plot Fig. 2 c
 
 ## Import data and graph stacked bar plot
@@ -39,17 +57,24 @@ criteria_pollutants <- sapply(criteria_pollutants,as.numeric)
 png(filename='fig/fig_2_pollutants.png',height=8,width= 16,units='cm',
     res = 400)
 # To set margins and legend position
-par(xpd=TRUE,mar=c(4,3,0.5,10))
+par(xpd=TRUE,mar=c(4,5,0.5,10))
+# To set color for 4 colors
+cols <- brewer.pal(4, 'Reds')
+pal <- colorRampPalette(cols)
+
 barplot(criteria_pollutants,
-        col=c('red','blue','green','white'),horiz=TRUE,xaxt='n',
+        col=sort(pal(4)),horiz=TRUE,xaxt='n',
+        #c('red','blue','green','white')
         names.arg = c('CO','PM', expression(paste('NO'['2'])),
-                      expression(paste('SO'['2']))),xlab = 'Percent contribution')
+                      expression(paste('SO'['2']))),
+        xlab = 'Percent contribution for the year 2013')
+
 # grid(ny=NA,nx=10,col='grey20',lty='dotted')
 axis(side=1,at=c(0,10,20,30,40,50,60,70,80,90,100),
      labels = c('0%','10%','20%','30%','40%','50%','60%','70%','80%','90%','100%'))
 
 legend(110,5,col=c('black','black','black','black'),
-       pch=c(22,22,22,22),pt.bg = c('blue','red','green','white'),
-       legend=c('Industries','Power plant',
+       pch=c(22,22,22,22),pt.bg = sort(pal(4)),
+       legend=c('Industries','Power plants',
                 'Others','Motor vehicles'),cex = 1)
 dev.off()
